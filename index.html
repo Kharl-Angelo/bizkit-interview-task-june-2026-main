@@ -67,10 +67,14 @@
         function dayCount(from, to) {
             // Rentals are billed inclusively: both start and end day count.
             const ms = new Date(to) - new Date(from);
-            return Math.round(ms / (1000 * 60 * 60 * 24)) + 1;
+            if (from === to) {
+                return Math.round(ms / (1000 * 60 * 60 * 24) + 1)
+            }
+            return Math.round(ms / (1000 * 60 * 60 * 24));
         }
 
         function updateTotal() {
+            console.log('here')
             const equipment = selectedEquipment();
             const from = document.getElementById("from").value;
             const to = document.getElementById("to").value;
@@ -127,6 +131,12 @@
 
         document.getElementById("equipment").addEventListener("change", updateTotal);
         document.getElementById("from").addEventListener("change", updateTotal);
+        // 4. The frontend price bug
+        // <-- PROBLEM -->
+        // Total updates doesn't change when the end date is modified
+        // <!-- SOLUTION -->
+        // End date field is not listening for its change. I just include the end date field to event listener when changed.
+        document.getElementById("to").addEventListener("change", updateTotal);
         document.getElementById("book").addEventListener("click", createBooking);
 
         loadEquipment();

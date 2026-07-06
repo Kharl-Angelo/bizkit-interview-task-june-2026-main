@@ -67,8 +67,15 @@ def rental_days(from_date, to_date):
 
 def dates_overlap(start_a, end_a, start_b, end_b):
     """True if date range A overlaps date range B."""
-    return start_b <= start_a <= end_b
-
+    # return start_b <= start_a <= end_b
+    # THE DOUBLE BOOKING BUG
+    # <-- PROBLEM -->
+    # A booking is considered valid when the new start date occurs before the existing booking’s start date, and the new end date either falls within or extends beyond the existing booking’s end date.
+    # <!-- SOLUTION -->
+    # end_a < start_b → new range is completely before the existing range
+    # start_a > end_b → new range is completely after the existing range
+    # If neither is true → the ranges overlap
+    return not (end_a < start_b or start_a > end_b)
 
 def find_conflicting_booking(equipment_id, from_date, to_date, bookings):
     """Return an existing booking that clashes with this one, or None."""

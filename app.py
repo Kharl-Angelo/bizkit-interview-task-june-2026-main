@@ -62,13 +62,20 @@ def parse_date(value):
 
 def rental_days(from_date, to_date):
     """Number of days a rental covers."""
+    # 2. The PHP 0 booking bug
+    # <-- PROBLEM -->
+    # Same day is equal to 0 based on the current formula instead of 1
+    # <!-- SOLUTION -->
+    # Add validation first if the parameters of from_date and to_date is same date then we automatically return 1 else we will proceed with the formula
+    if (from_date == to_date):
+        return 1
     return (to_date - from_date).days
 
 
 def dates_overlap(start_a, end_a, start_b, end_b):
     """True if date range A overlaps date range B."""
     # return start_b <= start_a <= end_b
-    # THE DOUBLE BOOKING BUG
+    # 1. THE DOUBLE BOOKING BUG
     # <-- PROBLEM -->
     # A booking is considered valid when the new start date occurs before the existing booking’s start date, and the new end date either falls within or extends beyond the existing booking’s end date.
     # <!-- SOLUTION -->

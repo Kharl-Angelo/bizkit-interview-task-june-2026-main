@@ -112,6 +112,12 @@ def index():
 
 @app.route("/api/equipment")
 def list_equipment():
+    # 3. Add a rule: no booking equipment under maintenance
+    # <-- PROBLEM -->
+    # Equipment that has maintenance status should not be booked or available
+    # <!-- SOLUTION -->
+    # Filtering out those equipment that has a status of maintenance
+    available_equipments = [e for e in EQUIPMENT if e["status"] != "maintenance"]
     return jsonify(EQUIPMENT)
 
 
@@ -142,6 +148,14 @@ def create_booking():
     if equipment is None:
         return jsonify({"error": "Unknown equipment"}), 400
 
+    # 3. Add a rule: no booking equipment under maintenance
+    # <-- PROBLEM -->
+    # Equipment that has maintenance status should not be booked or available
+    # <!-- SOLUTION -->
+    # Filtering out those equipment that has a status of maintenance
+    if equipment["status"] == "maintenance":
+        return jsonify({"error": "The equipment is currently unavailable for booking due to maintenance."}), 400
+  
     from_date = parse_date(data["from_date"])
     to_date = parse_date(data["to_date"])
     if to_date < from_date:

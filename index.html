@@ -43,6 +43,12 @@
         async function loadEquipment() {
             const res = await fetch("/api/equipment");
             equipmentList = await res.json();
+            // 3. Add a rule: no booking equipment under maintenance
+            // <-- PROBLEM -->
+            // Equipment that has maintenance status should not be booked or available
+            // <!-- SOLUTION -->
+            // Filtering out those equipment that has a status of maintenance
+            mappedEquipmentList = equipmentList.filter(v => v.status !== "maintenance")
             const select = document.getElementById("equipment");
             select.innerHTML = "";
             equipmentList.forEach(item => {
@@ -87,7 +93,15 @@
             const messageEl = document.getElementById("message");
             messageEl.className = "";
             messageEl.textContent = "";
-
+            const findEquipment = equipmentList?.find(v => v.id === Number(document.getElementById("equipment").value))
+            // 3. Add a rule: no booking equipment under maintenance
+            // <-- PROBLEM -->
+            // Equipment that has maintenance status should not be booked or available
+            // <!-- SOLUTION -->
+            // Filtering out those equipment that has a status of maintenance
+            if (findEquipment.status === "maintenance") {
+                return alert("The equipment is currently unavailable for booking due to maintenance.")
+            }
             const body = {
                 equipment_id: Number(document.getElementById("equipment").value),
                 customer: document.getElementById("customer").value,

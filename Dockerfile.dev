@@ -1,0 +1,31 @@
+# 1. Use the official Node.js image from Docker Hub as our starting base
+FROM node:latest
+
+# 2. Create and switch to a folder named /app inside the container for our project
+WORKDIR /app
+
+# 3. Copy ONLY package.json and package-lock.json from your computer into the container.
+# Doing this first allows Docker to cache your dependencies so it doesn't re-download 
+# them every time you change a line of source code.
+COPY package*.json ./
+
+# 4. Run the npm install command inside the container's Linux environment to 
+# cleanly download all your MUI, Redux, and React dependencies.
+RUN npm install
+
+# 5. Copy everything else from your local project folder into the container's /app folder.
+COPY . .
+
+# 6. Inform Docker that the container will be listening for traffic on port 5173.
+EXPOSE 5173
+
+# 7. The startup command. It runs "npm run dev", but the "-- --host" part is crucial. 
+# It forces Vite to broadcast outside the container so your local browser can see it.
+CMD ["npm", "run", "dev", "--", "--host"]
+
+# RUN
+# 1. Builds: It reads docker-compose.yml, notices the build section, looks at Dockerfile.dev, downloads node:latest, runs npm install, and builds your image.
+# 2. Creates Volumes: It sets up the shared folders so your local code changes sync instantly.
+# 3. Maps Ports: It opens the 5173 bridge.
+# 4. Starts: It triggers the CMD (npm run dev -- --host).
+# docker compose up

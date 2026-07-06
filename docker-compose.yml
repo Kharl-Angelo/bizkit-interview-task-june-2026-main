@@ -1,0 +1,36 @@
+# 1. Tells Docker Compose which configuration format version to use
+version: '3.8'
+
+# 2. Defines the group of containers (services) we want to spin up
+services:
+
+  # 3. Name your container service (you can name this anything, like "web" or "frontend")
+  web:
+    
+    # 4. Tells Compose how to build the image for this specific service
+    build:
+      # 5. Look for the build files in the current folder (.)
+      context: .
+      # 6. Specifically use the "Dockerfile.dev" file instead of the default "Dockerfile"
+      dockerfile: Dockerfile.dev
+      
+    # 7. Connects your computer's ports to the container's ports
+    ports:
+      # 8. Map port 5173 on your local machine to port 5173 inside the container [HOST:CONTAINER]
+      - "5173:5173"
+      
+    # 9. Syncs folders between your machine and the container
+    volumes:
+      # 10. Bind Mount: Syncs your current local directory (.) with the container's (/app).
+      # This is what makes Hot-Reloading work when you save files in VS Code!
+      - .:/app
+      
+      # 11. Anonymous Volume: Tells Docker, "Do NOT sync the container's /app/node_modules 
+      # back down to my computer." This protects the container's Linux dependencies.
+      - /app/node_modules
+      
+    # 12. Sets environment variables inside the container
+    environment:
+      # 13. Forces Vite's file watcher to use a "polling" method. This is a lifesaver 
+      # that ensures file changes are reliably caught across Windows/macOS and Docker.
+      - WATCHPACK_POLLING=true

@@ -1,4 +1,4 @@
 venv/
 
-docker-compose.yml/
-Dockerfile.dev/
+docker-compose.yml
+Dockerfile.dev

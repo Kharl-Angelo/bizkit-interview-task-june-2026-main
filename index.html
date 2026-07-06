@@ -67,6 +67,11 @@
         function dayCount(from, to) {
             // Rentals are billed inclusively: both start and end day count.
             const ms = new Date(to) - new Date(from);
+            // 2. The PHP 0 booking bug
+            // <-- PROBLEM -->
+            // Same day is equal to 0 based on the current formula instead of 1
+            // <!-- SOLUTION -->
+            // Add validation first if the parameters of from and to is same date then we automatically return the price in a day else we will proceed with the formula
             if (from === to) {
                 return Math.round(ms / (1000 * 60 * 60 * 24) + 1)
             }
